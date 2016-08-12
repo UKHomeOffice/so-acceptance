@@ -1,0 +1,43 @@
+{
+  "name": "so-acceptance",
+  "version": "1.0.0",
+  "description": "NodeJS acceptance testing for HOF Applications",
+  "license": "GPL-2.0",
+  "main": "codecept.conf.js",
+  "scripts": {
+    "test": "npm run style && npm run lint && npm run coverage",
+    "coverage": "NODE_ENV=test istanbul cover _mocha",
+    "lint": "eslint .",
+    "style": "jscs **/*.js"
+  },
+  "contributors": [
+    "Joe Fitter <joe@brightapp.io> (http://brightapp.io/)"
+  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UKHomeOffice/so-acceptance.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UKHomeOffice/so-acceptance/issues"
+  },
+  "author": "UKHomeOffice",
+  "dependencies": {
+    "codeceptjs": "^0.4.3",
+    "express-session": "^1.14.0",
+    "lodash": "^4.14.2",
+    "webdriverio": "^4.2.5"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint-config-homeoffice": "^1.0.0",
+    "istanbul": "^0.4.4",
+    "jscs": "^3.0.7",
+    "mocha": "^3.0.2",
+    "proxyquire": "^1.7.10",
+    "sinon": "^1.17.5",
+    "sinon-chai": "^2.8.0"
+  }
+}
