@@ -1,20 +1,52 @@
 'use strict';
 
 const Helper = require('codeceptjs/lib/helper');
-const session = require('../mock-session');
+const expressSession = require('express-session');
+const RedisStore = require('connect-redis')(expressSession);
+const cookieParser = require('cookie-parser');
 
-const SESSION_ID = 'fakeId';
-const SESSION_KEY = 'hmpo-wizard';
+const SESSION_KEY_PREFIX = 'hmpo-wizard';
+const SESSION_KEY_COOKIE_NAME = 'hod.sid';
+const SECRET = 'changethis';
+
+const encryption = require('hof-bootstrap/lib/encryption')(SECRET);
 
 module.exports = class Session extends Helper {
 
+  _beforeSuite() {
+    this.session = new RedisStore({
+      serializer: {
+        parse: data => JSON.parse(encryption.decrypt(data)),
+        stringify: data => encryption.encrypt(JSON.stringify(data))
+      }
+    });
+  }
+
+  _afterSuite() {
+    this.session.client.quit();
+  }
+
+  _getSessionId() {
+    return new Promise((resolve, reject) => {
+      this.helpers.WebDriverIO.browser.cookie()
+        .then(cookie => {
+          let sessionId = cookie.value.find(obj => obj.name === SESSION_KEY_COOKIE_NAME).value;
+          sessionId = cookieParser.signedCookie(decodeURIComponent(sessionId), SECRET);
+          resolve(sessionId);
+        })
+        .catch(reject);
+    });
+  }
+
   _getSession() {
     return new Promise((resolve, reject) => {
-      session.get(SESSION_ID, (err, sessionData) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(sessionData);
+      this._getSessionId().then(sessionId => {
+        this.session.get(sessionId, (err, sessionData) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(sessionData);
+        });
       });
     });
   }
@@ -23,7 +55,7 @@ module.exports = class Session extends Helper {
     return new Promise((resolve, reject) => {
       this._getSession()
         .then(sessionData => {
-          resolve(sessionData[`${SESSION_KEY}-${sessionKey}`] || {});
+          resolve(sessionData[`${SESSION_KEY_PREFIX}-${sessionKey}`] || {});
         })
         .catch(reject);
     });
@@ -50,14 +82,16 @@ module.exports = class Session extends Helper {
 
   _saveSession(sessionKey, data) {
     return new Promise((resolve, reject) => {
-      this._getSession().then(sessionData => {
-        session.set(SESSION_ID, Object.assign({}, sessionData, {
-          [`${SESSION_KEY}-${sessionKey}`]: data
-        }), err => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve();
+      this._getSessionId().then(sessionId => {
+        this._getSession().then(sessionData => {
+          this.session.set(sessionId, Object.assign(sessionData, {
+            [`${SESSION_KEY_PREFIX}-${sessionKey}`]: data
+          }), err => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve();
+          });
         });
       });
     });
