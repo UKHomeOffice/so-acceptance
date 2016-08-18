@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire');
 
 const mockWebDriverHelper = {
   browser: {
-    refresh: sinon.stub()
+    refresh: sinon.stub().returns(new Promise(resolve => resolve()))
   }
 };
 
@@ -35,8 +35,14 @@ describe('Navigation Helper', () => {
     navigationHelper.should.have.property('refreshPage').and.be.a('function');
   });
 
-  it('should call WebDriverIO.browser.refresh', () => {
-    navigationHelper.refreshPage();
-    mockWebDriverHelper.browser.refresh.should.have.been.calledOnce;
+  it('should return a promise', () => {
+    navigationHelper.refreshPage().should.be.a('promise');
+  });
+
+  it('should call WebDriverIO.browser.refresh', done => {
+    navigationHelper.refreshPage().then(() => {
+      mockWebDriverHelper.browser.refresh.should.have.been.calledTwice;
+      done();
+    });
   });
 });

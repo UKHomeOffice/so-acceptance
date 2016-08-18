@@ -26,7 +26,10 @@
   "author": "UKHomeOffice",
   "dependencies": {
     "codeceptjs": "^0.4.3",
+    "connect-redis": "^3.1.0",
+    "cookie-parser": "^1.4.3",
     "express-session": "^1.14.0",
+    "hof-bootstrap": "^3.2.0",
     "lodash": "^4.14.2",
     "webdriverio": "^4.2.5"
   },

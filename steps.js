@@ -33,6 +33,14 @@ module.exports = () => {
       this.seeInCurrentUrl(url);
     },
 
+    seeHint(field) {
+      this.seeElement(`${field}-hint`);
+    },
+
+    dontSeeHint(field) {
+      this.dontSeeElement(`${field}-hint`);
+    },
+
     seeErrors(fields) {
       if (!Array.isArray(fields)) {
         fields = [fields];

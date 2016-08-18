@@ -28,8 +28,6 @@ const baseConfig = {
       require: './helpers/navigation'
     }
   },
-  bootstrap: './setup.js',
-  teardown: './teardown.js',
   mocha: {},
   name: 'hof-acceptance',
   include: {

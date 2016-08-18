@@ -43,18 +43,7 @@ $ npm run test:acceptance
 
 #### Setup
 
-SO Acceptance comes with session mocking so you are able to test steps independently of one another. The easiest way to implement this is to use [hof-bootstrap](https://github.com/UKHomeOffice/hof-bootstrap/) and pass the mockSession store in config:
-
-app.js
-```js
-var bootstrap = require('hof-bootstrap');
-var sessionStore = require('so-acceptance/mock-session');
-
-module.exports = bootstrap({
-  sessionStore: process.env.NODE_ENV === 'ci' ? sessionStore : null,
-  ... your config
-});
-```
+SO Acceptance comes with session mocking so you are able to test steps independently of one another. This assumes you are using  [hof-bootstrap](https://github.com/UKHomeOffice/hof-bootstrap/) and redis for session storage.
 
 #### API
 
@@ -81,7 +70,7 @@ The following methods have been added to `I`:
 * `visitPage(page, [journey], [prereqs])`: visits `'/'`, then page, prepending journey if present, and setting prereq steps. Page and Prereqs are expected to be [PageObjects](https://github.com/Codeception/CodeceptJS/blob/master/docs/pageobjects.md) with a `url` property.
 * `seeErrors(errors)`: accepts either an array of keys or a single key, and checks for validation errors related to the element.
 * `seeElements(elements)`: accepts either an array of selectors or a single selector and checks all elements are present on the page.
-* `refreshPage()`: refreshes the page.
+* `refreshPage()`: refreshes the page - async, should be called within a generator.
 
 ### Customisation
 

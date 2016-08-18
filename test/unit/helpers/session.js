@@ -5,23 +5,60 @@ const FAKE_ID = 'fakeId';
 const FAKE_KEY = 'fake-key';
 
 describe('SessionHelper', () => {
-  let mockSession;
+  class MockRedis {
+    constructor() {
+      this.helpers = {
+        WebDriverIO: {
+          browser: {
+            cookie: sinon.stub().returns(new Promise(resolve => resolve(FAKE_ID)))
+          }
+        }
+      };
+      this.client = {
+        quit: sinon.stub()
+      };
+    }
+  }
   let SessionHelper;
   let sessionHelper;
-  let mockData = {
-    mockData: ''
-  };
+  let mockData;
 
   beforeEach(() => {
-    mockSession = {
-      get: sinon.stub().callsArgWith(1, null, mockData),
-      set: sinon.stub().callsArgWith(2, null, mockData)
+    mockData = {
+      mockData: ''
     };
+    MockRedis.prototype.get = sinon.stub().callsArgWith(1, null, mockData);
+    MockRedis.prototype.set = sinon.stub().callsArgWith(2, null, mockData);
 
     SessionHelper = proxyquire('../../../helpers/session', {
-      '../mock-session': mockSession
+      'connect-redis': function() {
+        return MockRedis;
+      },
+      'express-session': {},
+      'hof-bootstrap/lib/encryption'() {
+        return {
+          encrypt: val => val,
+          decrypt: val => val
+        };
+      }
     });
     sessionHelper = new SessionHelper();
+    sessionHelper._beforeSuite();
+  });
+
+  it('has a _beforeSuite method', () => {
+    sessionHelper.should.have.property('_beforeSuite')
+      .and.be.a('function');
+  });
+
+  it('has an _afterSuite method', () => {
+    sessionHelper.should.have.property('_afterSuite')
+      .and.be.a('function');
+  });
+
+  it('has a _getSessionId method', () => {
+    sessionHelper.should.have.property('_getSessionId')
+      .and.be.a('function');
   });
 
   it('has a _getSession method', () => {
@@ -50,11 +87,39 @@ describe('SessionHelper', () => {
   });
 
   describe('Private methods', () => {
+    describe('_beforeSuite', () => {
+      it('sets a session property on the sessionHelper instance', () => {
+        sessionHelper.should.have.property('session');
+      });
+    });
+
+    describe('_afterSuite', () => {
+      it('closes the redis connection', () => {
+        sessionHelper._afterSuite();
+        sessionHelper.session.client.quit.should.have.been.calledOnce;
+      });
+    });
+
+    describe('_getSessionId', () => {
+      it('returns a promise', () => {
+        sessionHelper._getSessionId().should.be.a('promise');
+      });
+    });
+
     describe('_getSession', () => {
+      beforeEach(() => {
+        sinon.stub(SessionHelper.prototype, '_getSessionId')
+          .returns(new Promise(resolve => resolve(FAKE_ID)));
+      });
+
+      afterEach(() => {
+        SessionHelper.prototype._getSessionId.restore();
+      });
+
       it('calls session.get with the sessionId \'fakeId\'', done => {
         sessionHelper._getSession()
           .then(() => {
-            mockSession.get.should.have.been.calledOnce
+            MockRedis.prototype.get.should.have.been.calledOnce
               .and.calledWith(FAKE_ID);
             done();
           });
@@ -70,10 +135,19 @@ describe('SessionHelper', () => {
     });
 
     describe('_saveSession', () => {
+      beforeEach(() => {
+        sinon.stub(SessionHelper.prototype, '_getSessionId')
+          .returns(new Promise(resolve => resolve(FAKE_ID)));
+      });
+
+      afterEach(() => {
+        SessionHelper.prototype._getSessionId.restore();
+      });
+
       it('calls session.save with the sessionId \'fakeId\'', done => {
         sessionHelper._saveSession(FAKE_KEY, mockData)
           .then(() => {
-            mockSession.set.should.have.been.calledOnce.
+            MockRedis.prototype.set.should.have.been.calledOnce.
               and.calledWith(FAKE_ID);
             done();
           });
@@ -82,7 +156,7 @@ describe('SessionHelper', () => {
       it('calls session.save with merged session object', done => {
         sessionHelper._saveSession(FAKE_KEY, {key: 'fakeKey'})
           .then(() => {
-            mockSession.set.args[0][1].should.be.eql({
+            MockRedis.prototype.set.args[0][1].should.be.eql({
               mockData: '',
               'hmpo-wizard-fake-key': {
                 key: 'fakeKey'
