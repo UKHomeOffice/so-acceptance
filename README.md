@@ -49,9 +49,9 @@ SO Acceptance comes with session mocking so you are able to test steps independe
 
 The `I` actor in CodeceptJS has been extended with the following session manipulation methods:
 
-* `getSession(route_name)`: returns the session data for the given route_name (defined in bootstrap config).
-* `setSessionData(route_name, {data})`: sets the key: value pairs in data to session for given route_name.
-* `setSessionSteps(route_name, [steps])`: sets the visited steps to session for given route name.
+* `getSession(route_name)`: returns the session data for the given route_name (defined in bootstrap config). Route name is optional for single journeys. Returns an object with the structure `{ key: key, data: data }`
+* `setSessionData(route_name, {data})`: sets the key: value pairs in data to session for given route_name. Route name is optional for single journeys
+* `setSessionSteps(route_name, [steps])`: sets the visited steps to session for given route name. Route name is optional for single journeys
 
 As these API methods all return promises, they should be used within generator functions to ensure code execution is paused while the session is manipulated:
 

@@ -158,7 +158,7 @@ describe('SessionHelper', () => {
           .then(() => {
             MockRedis.prototype.set.args[0][1].should.be.eql({
               mockData: '',
-              'hmpo-wizard-fake-key': {
+              'fake-key': {
                 key: 'fakeKey'
               }
             });
@@ -175,7 +175,9 @@ describe('SessionHelper', () => {
         sinon.stub(SessionHelper.prototype, '_getSession')
           .returns(new Promise(resolve => {
             resolve({
-              'hmpo-wizard-fake-key': mockData
+              cookie: {},
+              'hmpo-wizard-fake-key': mockData,
+              exists: true
             });
           }));
       });
@@ -184,18 +186,57 @@ describe('SessionHelper', () => {
         SessionHelper.prototype._getSession.restore();
       });
 
-      it('calls sessionHelper._getSession and resolves with the key provided', done => {
+      it('calls sessionHelper._getSession and resolves with an object', done => {
         sessionHelper.getSession(FAKE_KEY)
-          .then(data => {
-            data.should.be.eql(mockData);
+          .then(sessionData => {
+            sessionData.should.be.an('object');
             done();
           });
       });
 
-      it('calls sessionHelper._getSession and resolves with an empty object if key not found', done => {
+      it('resolves with the key given prefixed with hmpo-wizard', done => {
+        sessionHelper.getSession(FAKE_KEY)
+          .then(sessionData => {
+            sessionData.key.should.be.equal(`hmpo-wizard-${FAKE_KEY}`);
+            done();
+          });
+      });
+
+      it('resolves with the data at given key', done => {
+        sessionHelper.getSession(FAKE_KEY)
+          .then(sessionData => {
+            sessionData.data.should.be.eql(mockData);
+            done();
+          });
+      });
+
+      it('doesn\'t need a key if only one session key is set', done => {
+        sessionHelper.getSession()
+          .then(sessionData => {
+            sessionData.should.be.ok;
+            done();
+          });
+      });
+
+      it('throws an error if no key is given and more than one journey is set', done => {
+        SessionHelper.prototype._getSession
+          .returns(new Promise(resolve => resolve({
+            cookie: {},
+            'hmpo-wizard-fake-key': mockData,
+            'hmpo-wizard-another-key': {some: 'data'},
+            exists: true
+          })));
+        sessionHelper.getSession()
+          .catch(err => {
+            err.should.be.an.instanceOf(Error);
+            done();
+          });
+      });
+
+      it('resolves data with an empty object if key not found', done => {
         sessionHelper.getSession('nonsense-key')
-          .then(data => {
-            data.should.be.eql({});
+          .then(sessionData => {
+            sessionData.data.should.be.eql({});
             done();
           });
       });
@@ -204,7 +245,10 @@ describe('SessionHelper', () => {
     describe('setSessionData', () => {
       beforeEach(() => {
         sinon.stub(SessionHelper.prototype, 'getSession')
-          .returns(new Promise(resolve => resolve(mockData)));
+          .returns(new Promise(resolve => resolve({
+            key: FAKE_KEY,
+            data: mockData
+          })));
         sinon.stub(SessionHelper.prototype, '_saveSession')
           .returns(new Promise(resolve => resolve()));
       });
