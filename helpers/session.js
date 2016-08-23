@@ -55,7 +55,21 @@ module.exports = class Session extends Helper {
     return new Promise((resolve, reject) => {
       this._getSession()
         .then(sessionData => {
-          resolve(sessionData[`${SESSION_KEY_PREFIX}-${sessionKey}`] || {});
+          let key;
+          if (!sessionKey) {
+            const keys = Object.keys(sessionData).filter(k => k !== 'cookie' && k !== 'exists');
+            if (keys.length === 1) {
+              key = keys[0];
+            } else {
+              reject(new Error('sessionKey must be provided if there are multiple journeys'));
+            }
+          } else {
+            key = `${SESSION_KEY_PREFIX}-${sessionKey}`;
+          }
+          resolve({
+            key,
+            data: sessionData[key] || {}
+          });
         })
         .catch(reject);
     });
@@ -65,7 +79,7 @@ module.exports = class Session extends Helper {
     return new Promise((resolve, reject) => {
       this.getSession(sessionKey)
         .then(sessionData => {
-          this._saveSession(sessionKey, Object.assign(sessionData, data))
+          this._saveSession(sessionData.key, Object.assign(sessionData.data, data))
             .then(resolve)
             .catch(reject);
         });
@@ -85,7 +99,7 @@ module.exports = class Session extends Helper {
       this._getSessionId().then(sessionId => {
         this._getSession().then(sessionData => {
           this.session.set(sessionId, Object.assign(sessionData, {
-            [`${SESSION_KEY_PREFIX}-${sessionKey}`]: data
+            [sessionKey]: data
           }), err => {
             if (err) {
               return reject(err);
