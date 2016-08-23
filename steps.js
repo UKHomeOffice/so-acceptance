@@ -1,6 +1,7 @@
 'use strict';
 
 const actor = require('codeceptjs/lib/actor');
+const getRouteSteps = require('hmpo-form-wizard/lib/util/helpers').getRouteSteps;
 
 module.exports = () => {
   return actor({
@@ -13,22 +14,17 @@ module.exports = () => {
       this.click(this.selectors.submit);
     },
 
-    visitPage(page, journey, prereqs) {
-      let start = '';
-      if (journey) {
-        start = `${journey}/`;
-      }
-      const url = `/${start}${page.url}`;
+    visitPage(page, options) {
+      const base = options.baseUrl || '';
+      const url = `${base}/${page.url}`;
+      const steps = getRouteSteps(`/${page.url}`, options.steps);
 
       this.amOnPage('/');
 
-      if (prereqs) {
-        if (!Array.isArray(prereqs)) {
-          prereqs = [prereqs];
-        }
-        prereqs = prereqs.map(prereq => `/${prereq.url}`);
-        this.setSessionSteps(journey, prereqs);
+      if (steps.length) {
+        this.setSessionSteps(options.name, steps);
       }
+
       this.amOnPage(url);
       this.seeInCurrentUrl(url);
     },

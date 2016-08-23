@@ -1,8 +1,20 @@
 'use strict';
 
-const steps = require('../../steps');
+const proxyquire = require('proxyquire');
 
 describe('Actor functionality extensions', () => {
+  let steps;
+  let helpersStub;
+
+  beforeEach(() => {
+    helpersStub = {
+      getRouteSteps: sinon.stub().returns([])
+    };
+    steps = proxyquire('../../steps', {
+      'hmpo-form-wizard/lib/util/helpers': helpersStub
+    });
+  });
+
   it('should be a function', () => {
     steps.should.be.a('function');
   });
@@ -65,57 +77,42 @@ describe('Actor functionality extensions', () => {
       });
 
       describe('visitPage', () => {
-        const journeyName = 'test-journey';
-        const page = {url: 'test-page'};
+        const config = {
+          steps: {}
+        };
+        const page = {
+          url: 'test-page'
+        };
 
-        describe('with only page object passed', () => {
-          it('calls actor.amOnPage with \'/\' then page url with \'/\' prepended', () => {
-            actor.visitPage(page);
-            actor.amOnPage.should.have.been.calledTwice;
-            actor.amOnPage.firstCall.should.have.been.calledWithExactly('/');
-            actor.amOnPage.secondCall.should.have.been.calledWithExactly(`/${page.url}`);
-          });
-
-          it('calls actor.seeInCurrentUrl with page url with \'/\' prepended', () => {
-            actor.visitPage(page);
-            actor.seeInCurrentUrl.should.have.been.calledOnce
-              .and.calledWithExactly(`/${page.url}`);
-          });
+        it('calls getRouteSteps with stepName and steps config', () => {
+          actor.visitPage(page, config);
+          helpersStub.getRouteSteps.should.have.been.calledOnce
+            .and.calledWithExactly(`/${page.url}`, config.steps);
         });
 
-        describe('with page object and journey name passed', () => {
-          it('calls actor.amOnPage with the page.url and journey name prepended', () => {
-            actor.visitPage(page, journeyName);
-            actor.amOnPage.secondCall.should.have.been.calledWithExactly(`/${journeyName}/${page.url}`);
-          });
+        it('visits start page \'/\'', () => {
+          actor.visitPage(page, config);
+          actor.amOnPage.should.have.been.calledWith('/');
         });
 
-        describe('with prereqs passed', () => {
-          const prereqs = [{
-            url: 'url-1'
-          }, {
-            url: 'url-2'
-          }, {
-            url: 'url-3'
-          }];
+        it('visits the page.url with \'/\' prepended if no baseUrl provided', () => {
+          actor.visitPage(page, config);
+          actor.amOnPage.should.have.been.calledWith(`/${page.url}`);
+        });
 
-          it('call actor.setSessionSteps with the urls from passed page objects, with \'/\' prepended', () => {
-            actor.visitPage(page, null, prereqs);
-            actor.setSessionSteps.should.have.been.calledOnce
-              .and.calledWithExactly(null, [
-                `/${prereqs[0].url}`,
-                `/${prereqs[1].url}`,
-                `/${prereqs[2].url}`
-              ]);
-          });
+        it('visits the page.url with base URL prepended if provided', () => {
+          config.baseUrl = '/baseUrl';
+          actor.visitPage(page, config);
+          actor.amOnPage.should.have.been.calledWith(`${config.baseUrl}/${page.url}`);
+        });
 
-          it('accepts a single value', () => {
-            actor.visitPage(page, null, prereqs[0]);
-            actor.setSessionSteps.should.have.been.calledOnce
-              .and.calledWithExactly(null, [
-                `/${prereqs[0].url}`
-              ]);
-          });
+        it('sets prereq steps', () => {
+          const prereqs = ['/step-1', '/step-2'];
+          helpersStub.getRouteSteps.returns(prereqs);
+          config.name = 'journey-name';
+          actor.visitPage(page, config);
+          actor.setSessionSteps.should.have.been.calledOnce
+            .and.calledWithExactly(config.name, prereqs);
         });
       });
 
