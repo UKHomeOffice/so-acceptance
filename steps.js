@@ -58,6 +58,16 @@ module.exports = () => {
       selectors.forEach(selector => {
         this.seeElement(selector);
       });
+    },
+
+    seeEach(texts) {
+      if (!Array.isArray(texts)) {
+        texts = [texts];
+      }
+
+      texts.forEach(text => {
+        this.see(text);
+      });
     }
 
   });
