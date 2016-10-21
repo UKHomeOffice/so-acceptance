@@ -60,6 +60,16 @@ module.exports = () => {
       });
     },
 
+    dontSeeElements(selectors) {
+      if (!Array.isArray(selectors)) {
+        selectors = [selectors];
+      }
+
+      selectors.forEach(selector => {
+        this.dontSeeElement(selector);
+      });
+    },
+
     seeEach(texts) {
       if (!Array.isArray(texts)) {
         texts = [texts];
