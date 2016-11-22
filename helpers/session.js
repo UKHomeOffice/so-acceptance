@@ -5,7 +5,7 @@ const expressSession = require('express-session');
 const RedisStore = require('connect-redis')(expressSession);
 const cookieParser = require('cookie-parser');
 
-const SESSION_KEY_PREFIX = 'hmpo-wizard';
+const SESSION_KEY_PREFIX = 'hof-wizard';
 const SESSION_KEY_COOKIE_NAME = 'hod.sid';
 const SECRET = 'changethis';
 
