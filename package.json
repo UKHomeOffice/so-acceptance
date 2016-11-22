@@ -1,6 +1,6 @@
 {
   "name": "so-acceptance",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "NodeJS acceptance testing for HOF Applications",
   "license": "GPL-2.0",
   "main": "codecept.conf.js",
