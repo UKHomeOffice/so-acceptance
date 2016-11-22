@@ -1,7 +1,7 @@
 'use strict';
 
 const actor = require('codeceptjs/lib/actor');
-const getRouteSteps = require('hmpo-form-wizard/lib/util/helpers').getRouteSteps;
+const getRouteSteps = require('hof-form-wizard/lib/util/helpers').getRouteSteps;
 
 module.exports = () => {
   return actor({
