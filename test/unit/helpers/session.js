@@ -158,7 +158,7 @@ describe('SessionHelper', () => {
           .then(() => {
             MockRedis.prototype.set.args[0][1].should.be.eql({
               mockData: '',
-              'hmpo-wizard-fake-key': {
+              'hof-wizard-fake-key': {
                 key: 'fakeKey'
               }
             });
@@ -175,7 +175,7 @@ describe('SessionHelper', () => {
         sinon.stub(SessionHelper.prototype, '_getSession')
           .returns(new Promise(resolve => {
             resolve({
-              'hmpo-wizard-fake-key': mockData
+              'hof-wizard-fake-key': mockData
             });
           }));
       });
