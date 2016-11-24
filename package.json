@@ -25,7 +25,7 @@
   },
   "author": "UKHomeOffice",
   "dependencies": {
-    "codeceptjs": "0.4.5",
+    "codeceptjs": "0.4.9",
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.3",
     "express-session": "^1.14.0",
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint-config-homeoffice": "^1.0.0",
+    "eslint-config-homeoffice": "^2.0.0",
     "istanbul": "^0.4.4",
     "jscs": "^3.0.7",
     "mocha": "^3.0.2",
