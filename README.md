@@ -72,6 +72,7 @@ The following methods have been added to `I`:
 * `seeElements(elements)`: accepts either an array of selectors or a single selector and checks all elements are present on the page.
 * `refreshPage()`: refreshes the page - async, should be called within a generator.
 * `seeEach(texts)`: accepts an array of text and checks all texts are present on the page`.
+* `dontSeeEach(texts)`: accepts an array of text and checks all texts are not present on the page`.
 
 ### Customisation
 
