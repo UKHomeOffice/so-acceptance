@@ -11,7 +11,7 @@ describe('Actor functionality extensions', () => {
       getRouteSteps: sinon.stub().returns([])
     };
     steps = proxyquire('../../steps', {
-      'hmpo-form-wizard/lib/util/helpers': helpersStub
+      'hof-form-wizard/lib/util/helpers': helpersStub
     });
   });
 
