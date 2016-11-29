@@ -78,6 +78,16 @@ module.exports = () => {
       texts.forEach(text => {
         this.see(text);
       });
+    },
+
+    dontSeeEach(texts) {
+      if (!Array.isArray(texts)) {
+        texts = [texts];
+      }
+
+      texts.forEach(text => {
+        this.dontSee(text);
+      });
     }
 
   });
