@@ -6,14 +6,16 @@ const _ = require('lodash');
 let localConfig = {};
 
 try {
-  localConfig = require(path.resolve(__dirname, '../../codecept.conf'));
+  localConfig = require(path.resolve(process.cwd(), './codecept.conf'));
 } catch (err) {
   // eslint-disable-next-line no-console
   console.info('Local config not found, using defaults');
 }
 
+const tests = path.relative(__dirname, path.resolve(process.cwd(), './apps/**/features/**/*.js'));
+
 const baseConfig = {
-  tests: '../../apps/**/features/**/*.js',
+  tests: tests,
   timeout: 10000,
   output: './output',
   helpers: {

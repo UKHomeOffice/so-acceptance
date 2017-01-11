@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+const cp = require('child_process');
+const witch = require('witch');
+const path = require('path');
+
+const codecept = witch('codeceptjs');
+
+const config = path.resolve(__dirname, '../');
+
+const args = ['run', config].concat(process.argv.slice(2));
+
+cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
