@@ -4,6 +4,9 @@
   "description": "NodeJS acceptance testing for HOF Applications",
   "license": "GPL-2.0",
   "main": "codecept.conf.js",
+  "bin": {
+    "so-acceptance": "bin/so-acceptance"
+  },
   "scripts": {
     "test": "npm run style && npm run lint && npm run coverage",
     "coverage": "NODE_ENV=test istanbul cover _mocha",
@@ -29,10 +32,11 @@
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.3",
     "express-session": "^1.14.0",
-    "hof-form-wizard": "^1.0.2",
     "hof-bootstrap": "^6.0.0",
+    "hof-form-wizard": "^1.0.2",
     "lodash": "^4.14.2",
-    "webdriverio": "^4.2.5"
+    "webdriverio": "^4.2.5",
+    "witch": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

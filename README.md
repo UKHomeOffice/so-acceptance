@@ -15,12 +15,11 @@ $ npm install so-acceptance --save-dev
 #### Setup
 
 For quickstart usage you can simply npm install the library and add the following script to your package.json.
-> note - this assumes you are using NPM@3. If you are using a previous version of NPM you will need to point to the relative path of the codeceptjs exectuable. This will be located at ./node_modules/so-acceptance/.bin/codeceptjs
 
 package.json
 ```json
 "scripts": {
-  "test:acceptance": "codeceptjs run ./node_modules/so-acceptance --steps"
+  "test:acceptance": "so-acceptance --steps"
 }
 ```
 
