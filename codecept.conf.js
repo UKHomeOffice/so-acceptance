@@ -12,10 +12,8 @@ try {
   console.info('Local config not found, using defaults');
 }
 
-const tests = path.relative(__dirname, path.resolve(process.cwd(), './apps/**/features/**/*.js'));
-
 const baseConfig = {
-  tests: tests,
+  tests: './apps/**/features/**/*.js',
   timeout: 10000,
   output: './output',
   helpers: {
@@ -24,16 +22,16 @@ const baseConfig = {
       browser: 'phantomjs'
     },
     Session: {
-      require: './helpers/session'
+      require: path.resolve(__dirname, './helpers/session')
     },
     Navigation: {
-      require: './helpers/navigation'
+      require: path.resolve(__dirname, './helpers/navigation')
     }
   },
   mocha: {},
   name: 'hof-acceptance',
   include: {
-    I: './steps.js'
+    I: path.resolve(__dirname, './steps.js')
   }
 };
 
