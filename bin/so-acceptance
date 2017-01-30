@@ -6,8 +6,8 @@ const path = require('path');
 
 const codecept = witch('codeceptjs');
 
-const config = path.resolve(__dirname, '../');
+const config = path.resolve(__dirname, '../codecept.conf.js');
 
-const args = ['run', config].concat(process.argv.slice(2));
+const args = ['run', '--config', config].concat(process.argv.slice(2));
 
 cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
