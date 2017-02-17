@@ -34,6 +34,7 @@
     "hof-bootstrap": "^10.0.0",
     "hof-form-wizard": "^3.2.0",
     "lodash": "^4.14.2",
+    "webdriverio": "^4.6.2",
     "witch": "^1.0.0"
   },
   "devDependencies": {
