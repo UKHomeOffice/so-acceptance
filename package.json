@@ -8,10 +8,9 @@
     "so-acceptance": "bin/so-acceptance"
   },
   "scripts": {
-    "test": "npm run style && npm run lint && npm run coverage",
+    "test": "npm run lint && npm run coverage",
     "coverage": "NODE_ENV=test istanbul cover _mocha",
-    "lint": "eslint .",
-    "style": "jscs **/*.js"
+    "lint": "eslint ."
   },
   "contributors": [
     "Joe Fitter <joe@brightapp.io> (http://brightapp.io/)"
@@ -32,17 +31,16 @@
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.3",
     "express-session": "^1.14.0",
-    "hof-bootstrap": "^6.0.0",
-    "hof-form-wizard": "^1.0.2",
+    "hof-bootstrap": "^10.0.0",
+    "hof-form-wizard": "^3.2.0",
     "lodash": "^4.14.2",
-    "webdriverio": "^4.2.5",
     "witch": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.15.0",
     "eslint-config-homeoffice": "^1.0.0",
     "istanbul": "^0.4.4",
-    "jscs": "^3.0.7",
     "mocha": "^3.0.2",
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.5",
