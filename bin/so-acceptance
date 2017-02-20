@@ -10,4 +10,8 @@ const config = path.resolve(__dirname, '../codecept.conf.js');
 
 const args = ['run', '--config', config].concat(process.argv.slice(2));
 
-cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
+const runner = cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
+
+runner.once('exit', (code) => {
+  process.exit(code);
+});
