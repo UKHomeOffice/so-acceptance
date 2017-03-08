@@ -7,13 +7,6 @@ const FAKE_KEY = 'fake-key';
 describe('SessionHelper', () => {
   class MockRedis {
     constructor() {
-      this.helpers = {
-        WebDriverIO: {
-          browser: {
-            cookie: sinon.stub().returns(new Promise(resolve => resolve(FAKE_ID)))
-          }
-        }
-      };
       this.client = {
         quit: sinon.stub()
       };
@@ -43,6 +36,11 @@ describe('SessionHelper', () => {
       }
     });
     sessionHelper = new SessionHelper();
+    sessionHelper.helpers.WebDriverIO = {
+      browser: {
+        cookie: sinon.stub().returns(new Promise(resolve => resolve(FAKE_ID)))
+      }
+    };
     sessionHelper._beforeSuite();
   });
 
@@ -230,6 +228,16 @@ describe('SessionHelper', () => {
               mockData: '',
               some: 'data'
             });
+            done();
+          });
+      });
+
+      it('rejects if getSession rejects', done => {
+        const err = new Error('test error');
+        sessionHelper.getSession.returns(new Promise((resolve, reject) => reject(err)));
+        sessionHelper.setSessionData(FAKE_KEY, {some: 'data'})
+          .catch(e => {
+            e.should.equal(err);
             done();
           });
       });
