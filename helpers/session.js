@@ -27,20 +27,17 @@ module.exports = class Session extends Helper {
   }
 
   _getSessionId() {
-    return new Promise((resolve, reject) => {
-      this.helpers.WebDriverIO.browser.cookie()
-        .then(cookie => {
-          let sessionId = cookie.value.find(obj => obj.name === SESSION_KEY_COOKIE_NAME).value;
-          sessionId = cookieParser.signedCookie(decodeURIComponent(sessionId), SECRET);
-          resolve(sessionId);
-        })
-        .catch(reject);
-    });
+    return this.helpers.WebDriverIO.browser.cookie()
+      .then(cookie => {
+        let sessionId = cookie.value.find(obj => obj.name === SESSION_KEY_COOKIE_NAME).value;
+        sessionId = cookieParser.signedCookie(decodeURIComponent(sessionId), SECRET);
+        return sessionId;
+      });
   }
 
   _getSession() {
-    return new Promise((resolve, reject) => {
-      this._getSessionId().then(sessionId => {
+    return this._getSessionId().then(sessionId => {
+      return new Promise((resolve, reject) => {
         this.session.get(sessionId, (err, sessionData) => {
           if (err) {
             reject(err);
@@ -52,48 +49,39 @@ module.exports = class Session extends Helper {
   }
 
   getSession(sessionKey) {
-    return new Promise((resolve, reject) => {
-      this._getSession()
-        .then(sessionData => {
-          resolve(sessionData[`${SESSION_KEY_PREFIX}-${sessionKey}`] || {});
-        })
-        .catch(reject);
-    });
+    return this._getSession()
+      .then(sessionData => {
+        return sessionData[`${SESSION_KEY_PREFIX}-${sessionKey}`] || {};
+      });
   }
 
   setSessionData(sessionKey, data) {
-    return new Promise((resolve, reject) => {
-      this.getSession(sessionKey)
-        .then(sessionData => {
-          this._saveSession(sessionKey, Object.assign(sessionData, data))
-            .then(resolve)
-            .catch(reject);
-        });
-    });
+    return this.getSession(sessionKey)
+      .then(sessionData => {
+        return this._saveSession(sessionKey, Object.assign(sessionData, data));
+      });
   }
 
   setSessionSteps(sessionKey, steps) {
-    return new Promise((resolve, reject) => {
-      this.setSessionData(sessionKey, {steps})
-        .then(resolve)
-        .catch(reject);
-    });
+    return this.setSessionData(sessionKey, {steps});
   }
 
   _saveSession(sessionKey, data) {
-    return new Promise((resolve, reject) => {
-      this._getSessionId().then(sessionId => {
-        this._getSession().then(sessionData => {
-          this.session.set(sessionId, Object.assign(sessionData, {
-            [`${SESSION_KEY_PREFIX}-${sessionKey}`]: data
-          }), err => {
-            if (err) {
-              return reject(err);
-            }
-            return resolve();
+    return this._getSessionId()
+      .then(sessionId => {
+        return this._getSession()
+          .then(sessionData => {
+            return new Promise((resolve, reject) => {
+              this.session.set(sessionId, Object.assign(sessionData, {
+                [`${SESSION_KEY_PREFIX}-${sessionKey}`]: data
+              }), err => {
+                if (err) {
+                  return reject(err);
+                }
+                return resolve();
+              });
+            });
           });
-        });
       });
-    });
   }
 };
