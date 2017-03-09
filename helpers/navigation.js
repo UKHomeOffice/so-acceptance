@@ -7,7 +7,7 @@ module.exports = class Navigation extends Helper {
   refreshPage() {
     return this.helpers.WebDriverIO.browser.refresh();
   }
-  completeToStep(step, fields) {
-    return Autofill(this.helpers.WebDriverIO.browser)(step, fields);
+  completeToStep() {
+    return Autofill(this.helpers.WebDriverIO.browser).apply(null, arguments);
   }
 };
