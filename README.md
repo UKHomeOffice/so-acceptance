@@ -65,6 +65,7 @@ Scenario('I set session steps', function *(I) {
 
 The following methods have been added to `I`:
 
+* `completeToStep(step[, values])`: Completes a form as far as a given step, using values specified or default values inferred from the field names.
 * `submitForm()`: clicks the submit button `input[type="submit"]`
 * `visitPage(page, [journey], [prereqs])`: visits `'/'`, then page, prepending journey if present, and setting prereq steps. Page and Prereqs are expected to be [PageObjects](https://github.com/Codeception/CodeceptJS/blob/master/docs/pageobjects.md) with a `url` property.
 * `seeErrors(errors)`: accepts either an array of keys or a single key, and checks for validation errors related to the element.
