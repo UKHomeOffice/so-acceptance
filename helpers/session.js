@@ -9,7 +9,7 @@ const SESSION_KEY_PREFIX = 'hof-wizard';
 const SESSION_KEY_COOKIE_NAME = 'hod.sid';
 const SECRET = 'changethis';
 
-const encryption = require('hof-bootstrap/lib/encryption')(SECRET);
+const encryption = require('./encryption')(SECRET);
 
 module.exports = class Session extends Helper {
 
