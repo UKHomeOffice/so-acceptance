@@ -2,16 +2,20 @@
 
 const cp = require('child_process');
 const witch = require('witch');
-const path = require('path');
 
 const codecept = witch('codeceptjs');
 
-const config = path.resolve(__dirname, '../codecept.conf.js');
+const ensureConfig = require('../lib/ensure-config');
 
-const args = ['run', '--config', config].concat(process.argv.slice(2));
+ensureConfig()
+  .then(file => {
+    const args = ['run', '--config', file].concat(process.argv.slice(2));
 
-const runner = cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
+    const runner = cp.spawn(codecept, args, {stdio: 'inherit', cwd: process.cwd()});
 
-runner.once('exit', (code) => {
-  process.exit(code);
-});
+    runner.once('exit', (code) => {
+      process.exit(code);
+    });
+  })
+  .catch(() => process.exit(1));
+

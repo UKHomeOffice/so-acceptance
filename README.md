@@ -23,6 +23,8 @@ package.json
 }
 ```
 
+Running this for the first time will create a local configuration file in your project directory.
+
 The root of your acceptance tests will need to be located in a folder called `acceptance_tests` in the root of your app, features are located in a subdirectory named `features`.
 
 ```
@@ -76,16 +78,17 @@ The following methods have been added to `I`:
 
 ### Customisation
 
-You can add any customisation options in `acceptance_tests/codecept.conf.js`. The default options are extended with overrides defined here.
+You can add any customisation options in your local configuration file. The default options are extended with overrides defined here.
 
 codecept.conf.js
 ```js
 var path = require('path');
 
-module.exports = {
+module.exports = require('so-acceptance').extend({
   name: 'name of your app',
+  tests: './apps/**/acceptance/features/**/*.js',
   include: {
     customPage: path.resolve(__dirname, './pages/custom.js')
   }
-}
+})
 ```
