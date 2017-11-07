@@ -1,18 +1,8 @@
 'use strict';
 
 const path = require('path');
-const _ = require('lodash');
 
-let localConfig = {};
-
-try {
-  localConfig = require(path.resolve(process.cwd(), './codecept.conf'));
-} catch (err) {
-  // eslint-disable-next-line no-console
-  console.info('Local config not found, using defaults');
-}
-
-const baseConfig = {
+module.exports = {
   tests: './apps/**/features/**/*.js',
   timeout: 10000,
   output: './output',
@@ -34,5 +24,3 @@ const baseConfig = {
     I: path.resolve(__dirname, './steps.js')
   }
 };
-
-module.exports.config = _.merge({}, baseConfig, localConfig);
