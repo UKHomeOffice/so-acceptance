@@ -16,6 +16,9 @@ module.exports = {
     },
     Navigation: {
       require: path.resolve(__dirname, './helpers/navigation')
+    },
+    Focus: {
+      require: path.resolve(__dirname, './helpers/focus')
     }
   },
   mocha: {},
