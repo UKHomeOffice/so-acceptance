@@ -8,7 +8,6 @@
     "so-acceptance": "bin/so-acceptance"
   },
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "test": "npm run lint && npm run coverage",
     "coverage": "NODE_ENV=test istanbul cover _mocha",
     "lint": "eslint ."
@@ -31,6 +30,7 @@
     "codeceptjs": "^3.0.7",
     "connect-redis": "^3.1.0",
     "cookie-parser": "^1.4.3",
+    "cryptiles": "^4.1.3",
     "express-session": "^1.14.0",
     "hof-form-wizard": "^3.2.0",
     "hof-util-autofill": "^1.1.3",
@@ -47,8 +47,5 @@
     "proxyquire": "^1.7.10",
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0"
-  },
-  "resolutions": {
-    "cryptiles": "^4.1.2"
   }
 }
