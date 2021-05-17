@@ -1,6 +1,6 @@
 {
   "name": "so-acceptance",
-  "version": "5.1.0",
+  "version": "6.1.0",
   "description": "NodeJS acceptance testing for HOF Applications",
   "license": "GPL-2.0",
   "main": "index.js",
