@@ -1,7 +1,7 @@
 'use strict';
 
 const Helper = require('codeceptjs/lib/helper');
-const Autofill = require('hof-util-autofill');
+const Autofill = require('hof').utils.autofill;
 
 module.exports = class Navigation extends Helper {
   refreshPage() {
