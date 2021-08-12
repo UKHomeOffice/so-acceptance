@@ -8,7 +8,7 @@
     "so-acceptance": "bin/so-acceptance"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=14.15.0"
   },
   "scripts": {
     "test": "yarn run lint && yarn run coverage",
